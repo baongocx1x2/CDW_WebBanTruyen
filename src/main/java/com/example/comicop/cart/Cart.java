@@ -9,18 +9,18 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+//@Entity
+//@Data
+//@NoArgsConstructor
+//@AllArgsConstructor
 public class Cart {
-    @Id
+    //@Id
     private String cartID;
 
-    @ManyToOne
-    @JoinColumn(name = "accountID")
+//    @ManyToOne
+//    @JoinColumn(name = "accountID")
     private Account account;
 
-    @OneToMany(mappedBy = "cart")
+    //@OneToMany(mappedBy = "cart")
     private List<CartItem> cartItems;
 }
