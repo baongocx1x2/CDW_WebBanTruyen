@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AccountDto {
 
-    private int userID;
+    private Long userID;
     private String userName;
     private String password;
     private String email;
@@ -21,6 +21,7 @@ public class AccountDto {
     private String lastName;
     private String gender;
     private String img;
-    private boolean isActivated;
     private Role role;
+    private boolean activated = true;
+
 }

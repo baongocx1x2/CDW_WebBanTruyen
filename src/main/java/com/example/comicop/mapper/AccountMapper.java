@@ -21,8 +21,8 @@ public class AccountMapper {
                 account.getLastName(),
                 account.getGender(),
                 account.getImg(),
-                account.isActivated(),
-                account.getRole())
+                account.getRole(),
+                account.isActivated())
                 ;
     }
 
@@ -37,7 +37,7 @@ public class AccountMapper {
                 accountDto.getLastName(),
                 accountDto.getGender(),
                 accountDto.getImg(),
-                accountDto.isActivated(),
-                accountDto.getRole());
+                accountDto.getRole(),
+                accountDto.isActivated());
     }
 }
