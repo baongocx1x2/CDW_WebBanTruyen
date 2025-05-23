@@ -25,20 +25,22 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("io.github.wimdeblauwe:htmx-spring-boot:4.0.1")
-    implementation("org.springframework.boot:spring-boot-starter-jersey")
+  //  implementation("io.github.wimdeblauwe:htmx-spring-boot:4.0.1")
+    //implementation("org.springframework.boot:spring-boot-starter-jersey")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.session:spring-session-jdbc")
+   // implementation("org.springframework.boot:spring-boot-starter-jdbc")
+  //  implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+   // implementation("org.springframework.session:spring-session-jdbc")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     "developmentOnly"("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
+    //runtimeOnly("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 // https://mvnrepository.com/artifact/io.github.cdimascio/java-dotenv
     implementation("io.github.cdimascio:java-dotenv:5.2.2")
+
 
 }
 
