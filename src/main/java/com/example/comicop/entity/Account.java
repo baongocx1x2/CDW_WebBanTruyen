@@ -3,30 +3,41 @@ package com.example.comicop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
-
 
 @Entity
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account implements Serializable {
+@Table(name = "account")
+public class Account{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userID;
+    @Column(name = "user_id")
+    private Long userID;
+    @Column(name = "username")
     private String userName;
+    @Column(name = "password")
     private String password;
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+    @Column(name = "phone")
     private String phone;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "gender")
     private String gender;
+    @Column(name = "avatar_img")
     private String img;
-    private boolean isActivated;
+    @Column(name = "role")
+    private String role;
+    @Column(name = "is_activated")
+    private boolean activated = true;
 
-    @OneToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+
 
 //    @OneToMany(mappedBy = "account")
 //    private List<Order> orders;

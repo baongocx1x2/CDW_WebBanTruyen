@@ -2,13 +2,13 @@ package com.example.comicop.mapper;
 
 import com.example.comicop.dto.AccountDto;
 import com.example.comicop.entity.Account;
-import com.example.comicop.utils.PasswordEncoder;
+
 
 
 
 public class AccountMapper {
 
-    PasswordEncoder passwordEncoder;
+
 
     public static AccountDto accountToAccountDto(Account account) {
         return new AccountDto(
@@ -21,8 +21,8 @@ public class AccountMapper {
                 account.getLastName(),
                 account.getGender(),
                 account.getImg(),
-                account.isActivated(),
-                account.getRole())
+                account.getRole(),
+                account.isActivated())
                 ;
     }
 
@@ -37,7 +37,7 @@ public class AccountMapper {
                 accountDto.getLastName(),
                 accountDto.getGender(),
                 accountDto.getImg(),
-                accountDto.isActivated(),
-                accountDto.getRole());
+                accountDto.getRole(),
+                accountDto.isActivated());
     }
 }
