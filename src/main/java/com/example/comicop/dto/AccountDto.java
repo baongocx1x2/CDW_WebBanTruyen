@@ -1,6 +1,5 @@
 package com.example.comicop.dto;
 
-import com.example.comicop.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,8 @@ public class AccountDto {
     private String lastName;
     private String gender;
     private String img;
-    private Role role;
+    private String role;
     private boolean activated = true;
+
 
 }

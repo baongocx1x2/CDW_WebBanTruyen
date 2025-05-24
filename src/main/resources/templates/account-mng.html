@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Comicop(beta)</title>
+</head>
+<body>
+<div align="center">
+  <h1>Comicop(beta) account list</h1>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>First name</th>
+      <th>Last name</th>
+      <th>Phone</th>
+      <th>Role</th>
+      <th>Is Activated</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:each="account : ${listAccounts}">
+      <td th:text="${account.getUserID()}"></td>
+      <td th:text="${account.getUserName()}"></td>
+      <td th:text="${account.getEmail()}"></td>
+      <td th:text="${account.getFirstName()}"></td>
+      <td th:text="${account.getLastName()}"></td>
+      <td th:text="${account.getRole()}"></td>
+      <td th:text="${account.isActivated()}"></td>
+
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>

@@ -1,10 +1,11 @@
-package com.example.comicop.controller;
+package com.example.comicop.controller.api;
 
 import com.example.comicop.dto.AccountDto;
 import com.example.comicop.service.AccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class AccountController {
     //add REST API
     @PostMapping
     public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto accountDto) {
-            AccountDto savedAccountDto = accountService.createAccount(accountDto);
-            return new ResponseEntity<>(savedAccountDto, HttpStatus.CREATED);
+        AccountDto savedAccountDto = accountService.createAccount(accountDto);
+        return new ResponseEntity<>(savedAccountDto, HttpStatus.CREATED);
     }
 
     //get REST API

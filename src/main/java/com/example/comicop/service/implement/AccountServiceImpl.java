@@ -43,10 +43,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDto updateAccount(Long accountId, AccountDto updatedAccountDto) {
-       Account account = accountRepository.findById(accountId).orElseThrow(()-> new ResourceNotFoundException("account is not exist with given id" + accountId));
+        Account account = accountRepository.findById(accountId).orElseThrow(()-> new ResourceNotFoundException("account is not exist with given id" + accountId));
 
-       //account.setPassword(updatedAccountDto.getPassword());
-       account.setEmail(updatedAccountDto.getEmail());
+        //account.setPassword(updatedAccountDto.getPassword());
+        account.setEmail(updatedAccountDto.getEmail());
 //       account.setFirstName(updatedAccountDto.getFirstName());
 //       account.setLastName(updatedAccountDto.getLastName());
 //       account.setPhone(updatedAccountDto.getPhone());
@@ -55,7 +55,7 @@ public class AccountServiceImpl implements AccountService {
         /*
         muốn update cái nào thì mở cái đó nha
          */
-       Account updatedAccountObj = accountRepository.save(account);
+        Account updatedAccountObj = accountRepository.save(account);
         return AccountMapper.accountToAccountDto(updatedAccountObj);
     }
 

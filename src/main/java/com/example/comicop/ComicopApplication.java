@@ -6,16 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-@RestController
+//@RestController
 public class ComicopApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ComicopApplication.class, args);
     }
 
-    @GetMapping
-    public String hello(){
-        return "Hello World";
-    }
 
 }

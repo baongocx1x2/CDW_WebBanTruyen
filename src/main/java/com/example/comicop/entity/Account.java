@@ -3,8 +3,6 @@ package com.example.comicop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
-
 
 @Entity
 @Data
@@ -13,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "account")
-public class Account implements Serializable {
+public class Account{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -22,7 +20,7 @@ public class Account implements Serializable {
     private String userName;
     @Column(name = "password")
     private String password;
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
     @Column(name = "phone")
     private String phone;
@@ -34,11 +32,8 @@ public class Account implements Serializable {
     private String gender;
     @Column(name = "avatar_img")
     private String img;
-
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
-
+    @Column(name = "role")
+    private String role;
     @Column(name = "is_activated")
     private boolean activated = true;
 

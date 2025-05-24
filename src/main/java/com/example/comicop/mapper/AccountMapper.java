@@ -2,13 +2,13 @@ package com.example.comicop.mapper;
 
 import com.example.comicop.dto.AccountDto;
 import com.example.comicop.entity.Account;
-import com.example.comicop.utils.PasswordEncoder;
+
 
 
 
 public class AccountMapper {
 
-    PasswordEncoder passwordEncoder;
+
 
     public static AccountDto accountToAccountDto(Account account) {
         return new AccountDto(
