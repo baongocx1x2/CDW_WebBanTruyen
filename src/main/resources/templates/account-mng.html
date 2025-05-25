@@ -3,11 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Comicop(beta)</title>
+     <link rel="stylesheet" th:href="@{/css/form.css}">
 </head>
 <body>
+<!--<header th:replace="fragments/header :: header">-->
+<!--  blank header-->
+<!--</header>-->
+
+
 <div align="center">
   <h1>Comicop(beta) account list</h1>
   <table>
+    <div>create</div>
+    <div>choose</div>
+    <div>delete</div>
     <thead>
     <tr>
       <th>ID</th>
@@ -35,5 +44,8 @@
   </table>
 
 </div>
+<!--<footer th:replace="fragments/footer :: footer">-->
+<!--  blank footer-->
+<!--</footer>-->
 </body>
 </html>
