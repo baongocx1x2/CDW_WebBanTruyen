@@ -1,8 +1,13 @@
+/* 1. Import Font từ Google (đặt đầu file) */
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* 2. Các chỉ thị của Tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Scrollbar */
+/* 3. Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -22,31 +27,34 @@
   background: #555;
 }
 
-/* Custom Font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
+/* 4. Base layer */
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
   }
 
   body {
-    @apply bg-gray-50;
+    /* Đã thay từ bg-gray-50 thành bg-gray-100 */
+    @apply bg-gray-100;
   }
 }
 
-/* Custom Components */
+/* 5. Components layer */
 @layer components {
   .btn-primary {
-    @apply bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50;
+    @apply bg-indigo-600 text-white py-2 px-4 rounded-md
+    hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50;
   }
 
   .btn-secondary {
-    @apply bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+    @apply bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md
+      /* Thay hover:bg-gray-50 thành hover:bg-gray-100 */
+    hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
   }
 
   .input-primary {
-    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500;
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm
+    focus:border-indigo-500 focus:ring-indigo-500;
   }
 
   .card {
@@ -74,7 +82,7 @@
   }
 }
 
-/* Animations */
+/* 6. Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -103,7 +111,7 @@
   animation: slideIn 0.3s ease-out;
 }
 
-/* Dark Mode */
+/* 7. Dark Mode */
 @media (prefers-color-scheme: dark) {
   body {
     @apply bg-gray-900 text-gray-100;
