@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../contexts/CartContext.tsx';
-import { useAuth } from '../contexts/AuthContext.tsx';
-import { CheckoutDetails } from '../models/Cart.ts';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import { CheckoutDetails } from '../models/Cart';
+import { mangas } from '../data/mockData';
+import { CartItem } from '../models/types';
 
 const Cart: React.FC = () => {
   const { cart, updateQuantity, removeFromCart, calculateShipping, checkout } = useCart();
@@ -21,50 +23,38 @@ const Cart: React.FC = () => {
     paymentMethod: 'cod',
   });
 
-  const handleQuantityChange = async (itemId: number, newQuantity: number) => {
-    try {
-      await updateQuantity(itemId, newQuantity);
-    } catch (err) {
-      console.error('Error updating quantity:', err);
-      alert('Không thể cập nhật số lượng. Vui lòng thử lại sau.');
-    }
+  // Mock cart data
+  const [cartItems, setCartItems] = useState<CartItem[]>([
+    { id: 1, manga: mangas[0], quantity: 2 },
+    { id: 2, manga: mangas[1], quantity: 1 }
+  ]);
+
+  const calculateSubtotal = () => {
+    return cartItems.reduce((total, item) => total + item.manga.price * item.quantity, 0);
   };
 
-  const handleRemoveItem = async (itemId: number) => {
+  const shippingFee = 30000; // Mock shipping fee
+  const total = calculateSubtotal() + shippingFee;
+
+  const handleQuantityChange = (itemId: number, newQuantity: number) => {
+    setCartItems(items =>
+      items.map(item =>
+        item.id === itemId ? { ...item, quantity: Math.max(1, newQuantity) } : item
+      )
+    );
+  };
+
+  const handleRemoveItem = (itemId: number) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) {
-      try {
-        await removeFromCart(itemId);
-      } catch (err) {
-        console.error('Error removing item:', err);
-        alert('Không thể xóa sản phẩm. Vui lòng thử lại sau.');
-      }
+      setCartItems(items => items.filter(item => item.id !== itemId));
     }
   };
 
-  const handleCheckout = async () => {
-    if (!user) {
-      alert('Vui lòng đăng nhập để thanh toán');
-      return;
-    }
-
-    try {
-      setIsCheckingOut(true);
-      const shippingFee = await calculateShipping(checkoutDetails.shippingAddress);
-      await checkout({
-        ...checkoutDetails,
-        shippingFee,
-      });
-      alert('Đặt hàng thành công!');
-      // Redirect to order confirmation page
-    } catch (err) {
-      console.error('Error during checkout:', err);
-      alert('Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.');
-    } finally {
-      setIsCheckingOut(false);
-    }
+  const handleCheckout = () => {
+    alert('Chức năng thanh toán đang được phát triển!');
   };
 
-  if (!cart || cart.items.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h2 className="text-2xl font-bold mb-4">Giỏ hàng trống</h2>
@@ -87,7 +77,7 @@ const Cart: React.FC = () => {
         {/* Cart Items */}
         <div className="lg:col-span-2">
           <div className="space-y-4">
-            {cart.items.map((item) => (
+            {cartItems.map((item) => (
               <div
                 key={item.id}
                 className="flex items-center space-x-4 border border-gray-200 rounded-lg p-4"
@@ -111,7 +101,7 @@ const Cart: React.FC = () => {
                   <div className="flex items-center space-x-4 mt-2">
                     <div className="flex items-center border border-gray-300 rounded-md">
                       <button
-                        onClick={() => handleQuantityChange(item.id, Math.max(1, item.quantity - 1))}
+                        onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                         className="px-3 py-1 text-gray-600 hover:bg-gray-100"
                       >
                         -
@@ -151,29 +141,24 @@ const Cart: React.FC = () => {
             
             <div className="flex justify-between py-2 border-b border-gray-200">
               <span>Tạm tính</span>
-              <span>{cart.subtotal.toLocaleString('vi-VN')} ₫</span>
+              <span>{calculateSubtotal().toLocaleString('vi-VN')} ₫</span>
             </div>
             
             <div className="flex justify-between py-2 border-b border-gray-200">
               <span>Phí vận chuyển</span>
-              <span>{cart.shippingFee.toLocaleString('vi-VN')} ₫</span>
+              <span>{shippingFee.toLocaleString('vi-VN')} ₫</span>
             </div>
             
             <div className="flex justify-between py-2 font-bold">
               <span>Tổng cộng</span>
-              <span>{cart.total.toLocaleString('vi-VN')} ₫</span>
+              <span>{total.toLocaleString('vi-VN')} ₫</span>
             </div>
 
             <button
               onClick={handleCheckout}
-              disabled={isCheckingOut}
-              className={`w-full bg-indigo-600 text-white py-3 rounded-md ${
-                isCheckingOut
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-indigo-700'
-              }`}
+              className="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700"
             >
-              {isCheckingOut ? 'Đang xử lý...' : 'Tiến hành thanh toán'}
+              Tiến hành thanh toán
             </button>
 
             <Link

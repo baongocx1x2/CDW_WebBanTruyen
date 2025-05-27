@@ -1,68 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Manga } from '../models/Manga.ts';
-import { mangaService } from '../services/mangaService.ts';
-import { useCart } from '../contexts/CartContext.tsx';
+import React, { useState } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import { mangas } from '../data/mockData'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faStar } from '@fortawesome/free-solid-svg-icons'
 
 const MangaDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const [manga, setManga] = useState<Manga | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const { addToCart } = useCart();
+  const { id } = useParams<{ id: string }>()
+  const manga = mangas.find(m => m.id === Number(id))
+  const [quantity, setQuantity] = useState(1)
 
-  useEffect(() => {
-    const fetchManga = async () => {
-      try {
-        setIsLoading(true);
-        const response = await mangaService.getById(Number(id));
-        setManga(response.data);
-      } catch (err) {
-        setError('Có lỗi xảy ra khi tải thông tin manga. Vui lòng thử lại sau.');
-        console.error('Error fetching manga:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchManga();
-    }
-  }, [id]);
-
-  const handleAddToCart = async () => {
-    try {
-      if (manga) {
-        await addToCart(manga.id, quantity);
-        alert('Đã thêm vào giỏ hàng thành công!');
-      }
-    } catch (err) {
-      alert('Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại sau.');
-      console.error('Error adding to cart:', err);
-    }
-  };
-
-  if (isLoading) {
+  if (!manga) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
-      </div>
-    );
-  }
-
-  if (error || !manga) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-red-600">{error || 'Không tìm thấy manga'}</p>
+      <div className="container mx-auto px-4 py-16 text-center">
+        <h2 className="text-2xl font-bold mb-4">Không tìm thấy manga</h2>
         <Link
           to="/"
-          className="mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+          className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700"
         >
           Quay về trang chủ
         </Link>
       </div>
-    );
+    )
+  }
+
+  const handleAddToCart = () => {
+    alert('Đã thêm vào giỏ hàng!')
   }
 
   return (
@@ -99,6 +61,13 @@ const MangaDetail: React.FC = () => {
               <span className="font-semibold">Năm phát hành:</span>{' '}
               {manga.releaseYear}
             </p>
+            <div className="flex items-center">
+              <span className="font-semibold text-lg text-gray-600 mr-2">Đánh giá:</span>
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faStar} className="text-yellow-400" />
+                <span className="ml-1 text-lg text-gray-700">{manga.rating}</span>
+              </div>
+            </div>
           </div>
 
           <div className="border-t border-b border-gray-200 py-4">
@@ -146,7 +115,7 @@ const MangaDetail: React.FC = () => {
                 {manga.chapters.map(chapter => (
                   <div
                     key={chapter.id}
-                    className="p-3 border border-gray-200 rounded-md hover:border-indigo-600"
+                    className="p-3 border border-gray-200 rounded-md hover:border-indigo-600 cursor-pointer"
                   >
                     <p className="font-medium">Chapter {chapter.number}</p>
                     <p className="text-sm text-gray-500">{chapter.title}</p>
@@ -170,18 +139,15 @@ const MangaDetail: React.FC = () => {
                       <p className="font-medium">{review.userName}</p>
                       <div className="flex items-center">
                         {[...Array(5)].map((_, i) => (
-                          <svg
+                          <FontAwesomeIcon
                             key={i}
-                            className={`h-5 w-5 ${
+                            icon={faStar}
+                            className={`h-4 w-4 ${
                               i < review.rating
                                 ? 'text-yellow-400'
                                 : 'text-gray-300'
                             }`}
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
+                          />
                         ))}
                       </div>
                     </div>
@@ -197,7 +163,7 @@ const MangaDetail: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MangaDetail; 
+export default MangaDetail 
