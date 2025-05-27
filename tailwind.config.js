@@ -1,16 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-      "./index.html",
-      "./src/**/*.{js,jsx,ts,tsx}",
+        "./src/**/*.{html,js,jsx,ts,tsx,css}",
+        "./public/index.html",
+    ],
+    safelist: [
+        'bg-gray-50',
     ],
     darkMode: 'media',
     theme: {
-      extend: {
-        fontFamily: {
-          sans: ['Inter', 'system-ui', 'sans-serif'],
+        extend: {
+            fontFamily: {
+                sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
         },
-      },
     },
     plugins: [],
-  }
+}
