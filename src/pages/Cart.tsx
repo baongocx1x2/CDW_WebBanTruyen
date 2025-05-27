@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../contexts/CartContext.tsx';
-import { useAuth } from '../contexts/AuthContext.tsx';
-import { CheckoutDetails } from '../models/Cart.ts';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import { CheckoutDetails } from '../models/Cart';
 import { mangas } from '../data/mockData';
 import { CartItem } from '../models/types';
 
