@@ -1,0 +1,143 @@
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Navbar Styles */
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Manga Card Styles */
+.manga-card {
+  transition: transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.manga-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.manga-card .card-img-top {
+  height: 300px;
+  object-fit: cover;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.price {
+  color: #dc3545;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Author Card Styles */
+.author-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+
+/* Cart Styles */
+.cart-item img {
+  max-width: 100px;
+  height: auto;
+}
+
+.quantity-control {
+  width: 80px !important;
+}
+
+/* Rating Stars */
+.rating {
+  color: #ffc107;
+}
+
+/* Carousel Styles */
+.carousel-item img {
+  height: 400px;
+  object-fit: cover;
+}
+
+.carousel-caption {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+/* Category Grid */
+.category-card {
+  text-align: center;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.category-card:hover {
+  background-color: #f8f9fa;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .manga-card .card-img-top {
+    height: 200px;
+  }
+
+  .carousel-item img {
+    height: 300px;
+  }
+
+  .cart-item img {
+    max-width: 80px;
+  }
+}
+
+/* Footer Styles */
+footer {
+  margin-top: auto;
+}
+
+footer a:hover {
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Error Message */
+.error-message {
+  text-align: center;
+  color: #dc3545;
+  padding: 2rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+/* Search Results */
+.search-highlight {
+  background-color: #fff3cd;
+  padding: 0.1rem 0.25rem;
+  border-radius: 0.25rem;
+} 

@@ -1,0 +1,130 @@
+/* General Styles */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Product Card Styles */
+.manga-card {
+    transition: transform 0.2s;
+    height: 100%;
+}
+
+.manga-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.manga-card img {
+    height: 300px;
+    object-fit: cover;
+}
+
+.manga-card .card-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.manga-card .card-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Price Styles */
+.price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+/* Category Badge */
+.category-badge {
+    background-color: #3498db;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+}
+
+/* Rating Stars */
+.rating {
+    color: #f1c40f;
+}
+
+/* Footer Styles */
+footer {
+    margin-top: auto;
+}
+
+footer a:hover {
+    color: #fff;
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .manga-card img {
+        height: 250px;
+    }
+}
+
+/* Cart Badge */
+.cart-badge {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-badge[data-count]:after {
+    content: attr(data-count);
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 0.75rem;
+    background-color: #e74c3c;
+    color: white;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    line-height: 18px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+/* Search Bar */
+.search-form input {
+    border-radius: 20px;
+}
+
+.search-form button {
+    border-radius: 20px;
+}
+
+/* Pagination */
+.pagination .page-link {
+    color: #3498db;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #3498db;
+    border-color: #3498db;
+} 

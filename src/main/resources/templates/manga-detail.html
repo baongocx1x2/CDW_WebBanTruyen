@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title th:text="${manga.title} + ' - Chi tiết'">Chi tiết truyện</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/category/{id}(id=${manga.category.id})}" th:text="${manga.category.name}">Thể loại</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${manga.title}">Tên truyện</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Manga Image -->
+            <div class="col-md-4 mb-4">
+                <div class="position-relative">
+                    <img th:src="${manga.coverImage}" class="img-fluid rounded shadow" alt="Manga Cover">
+                    <span class="badge bg-danger position-absolute top-0 end-0 m-2" th:if="${manga.isNewRelease}">Mới</span>
+                </div>
+            </div>
+
+            <!-- Manga Info -->
+            <div class="col-md-8">
+                <h1 class="mb-3" th:text="${manga.title}">Tên truyện</h1>
+                
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rating me-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span class="ms-1" th:text="${manga.rating}">4.5</span>
+                    </div>
+                    <span class="text-muted">|</span>
+                    <span class="ms-3" th:text="${manga.reviewCount} + ' đánh giá'">100 đánh giá</span>
+                    <span class="text-muted">|</span>
+                    <span class="ms-3" th:text="${manga.soldCount} + ' đã bán'">1000 đã bán</span>
+                </div>
+
+                <div class="price-section mb-4">
+                    <h2 class="price" th:text="${#numbers.formatDecimal(manga.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">150,000 đ</h2>
+                    <span class="text-muted text-decoration-line-through" th:if="${manga.originalPrice}" 
+                          th:text="${#numbers.formatDecimal(manga.originalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">200,000 đ</span>
+                    <span class="badge bg-danger ms-2" th:if="${manga.discountPercentage}" 
+                          th:text="'-' + ${manga.discountPercentage} + '%'">-25%</span>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Thông tin chi tiết:</h5>
+                    <table class="table">
+                        <tr>
+                            <td class="fw-bold">Tác giả:</td>
+                            <td><a th:href="@{/author/{id}(id=${manga.author.id})}" th:text="${manga.author.name}">Tên tác giả</a></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Nhà xuất bản:</td>
+                            <td th:text="${manga.publisher}">NXB Kim Đồng</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Số trang:</td>
+                            <td th:text="${manga.pageCount}">200</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Khổ sách:</td>
+                            <td th:text="${manga.dimensions}">13 x 18 cm</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Ngày phát hành:</td>
+                            <td th:text="${#temporals.format(manga.releaseDate, 'dd/MM/yyyy')}">01/01/2024</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="purchase-section mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <label class="form-label">Số lượng:</label>
+                            <div class="input-group" style="width: 150px;">
+                                <button class="btn btn-outline-secondary" type="button" id="decreaseQuantity">-</button>
+                                <input type="number" class="form-control text-center" value="1" min="1" max="99" id="quantity">
+                                <button class="btn btn-outline-secondary" type="button" id="increaseQuantity">+</button>
+                            </div>
+                        </div>
+                        <div class="col-auto ms-3">
+                            <span class="text-muted" th:text="${manga.stockCount} + ' sản phẩm có sẵn'">100 sản phẩm có sẵn</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ
+                    </button>
+                    <button class="btn btn-danger btn-lg">
+                        <i class="fas fa-bolt me-2"></i>Mua ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <ul class="nav nav-tabs" id="mangaTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="description-tab" data-bs-toggle="tab" href="#description" role="tab">
+                            Mô tả
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="review-tab" data-bs-toggle="tab" href="#review" role="tab">
+                            Đánh giá
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content mt-3" id="mangaTabContent">
+                    <!-- Description Tab -->
+                    <div class="tab-pane fade show active" id="description" role="tabpanel">
+                        <div class="bg-light p-4 rounded">
+                            <div th:utext="${manga.description}">
+                                Mô tả chi tiết về nội dung truyện...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Tab -->
+                    <div class="tab-pane fade" id="review" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center mb-4">
+                                    <h4>Đánh giá trung bình</h4>
+                                    <div class="display-4 fw-bold text-warning" th:text="${manga.rating}">4.5</div>
+                                    <div class="rating mb-2">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <div class="text-muted" th:text="${manga.reviewCount} + ' đánh giá'">100 đánh giá</div>
+                                </div>
+
+                                <div class="rating-bars">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="text-warning me-2">5 <i class="fas fa-star"></i></div>
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 70%"></div>
+                                        </div>
+                                        <div class="ms-2">70%</div>
+                                    </div>
+                                    <!-- Repeat for other ratings -->
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <!-- Review List -->
+                                <div class="review-list">
+                                    <div class="card mb-3" th:each="review : ${manga.reviews}">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <div class="d-flex align-items-center">
+                                                    <img th:src="${review.user.avatar}" class="rounded-circle me-2" width="40" height="40" alt="User Avatar">
+                                                    <div>
+                                                        <h6 class="mb-0" th:text="${review.user.name}">Tên người dùng</h6>
+                                                        <div class="rating">
+                                                            <i class="fas fa-star text-warning"></i>
+                                                            <span th:text="${review.rating}">5.0</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted" th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">01/01/2024</small>
+                                            </div>
+                                            <p class="card-text" th:text="${review.content}">Nội dung đánh giá...</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pagination -->
+                                <nav th:if="${manga.reviews.totalPages > 1}">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item" th:classappend="${manga.reviews.first} ? 'disabled'">
+                                            <a class="page-link" th:href="@{${manga.reviews.url}(page=${manga.reviews.number-1})}">Trước</a>
+                                        </li>
+                                        <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, manga.reviews.totalPages - 1)}"
+                                            th:classappend="${pageNumber == manga.reviews.number} ? 'active'">
+                                            <a class="page-link" th:href="@{${manga.reviews.url}(page=${pageNumber})}" 
+                                               th:text="${pageNumber + 1}">1</a>
+                                        </li>
+                                        <li class="page-item" th:classappend="${manga.reviews.last} ? 'disabled'">
+                                            <a class="page-link" th:href="@{${manga.reviews.url}(page=${manga.reviews.number+1})}">Sau</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Manga Section -->
+        <section class="mt-5">
+            <h3 class="mb-4">Truyện liên quan</h3>
+            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4">
+                <div class="col" th:each="relatedManga : ${manga.relatedManga}">
+                    <div class="card manga-card h-100">
+                        <img th:src="${relatedManga.coverImage}" class="card-img-top" alt="Manga Cover">
+                        <div class="card-body">
+                            <h6 class="card-title" th:text="${relatedManga.title}">Tên Truyện</h6>
+                            <p class="price mb-0" th:text="${#numbers.formatDecimal(relatedManga.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">150,000 đ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Custom JavaScript for quantity input -->
+    <th:block layout:fragment="javascript">
+        <script>
+            document.getElementById('decreaseQuantity').addEventListener('click', function() {
+                var input = document.getElementById('quantity');
+                var value = parseInt(input.value);
+                if (value > 1) {
+                    input.value = value - 1;
+                }
+            });
+
+            document.getElementById('increaseQuantity').addEventListener('click', function() {
+                var input = document.getElementById('quantity');
+                var value = parseInt(input.value);
+                if (value < 99) {
+                    input.value = value + 1;
+                }
+            });
+        </script>
+    </th:block>
+</body>
+</html> 
