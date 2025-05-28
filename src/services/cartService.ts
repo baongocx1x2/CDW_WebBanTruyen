@@ -1,5 +1,5 @@
-import api from './api.ts';
-import { Cart, CartItem, Order, CheckoutDetails } from '../models/Cart.ts';
+import api from './api';
+import { Cart, CartItem, Order, CheckoutDetails } from '../models/Cart';
 
 export const cartService = {
   // Cart operations

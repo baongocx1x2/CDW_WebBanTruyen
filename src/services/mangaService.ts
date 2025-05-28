@@ -1,5 +1,5 @@
-import api from './api.ts';
-import { Manga, Chapter, Review } from '../models/Manga.ts';
+import api from './api';
+import { Manga, Chapter, Review } from '../models/Manga';
 
 export const mangaService = {
   // Manga listing
