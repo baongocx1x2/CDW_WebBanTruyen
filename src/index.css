@@ -34,7 +34,6 @@
   }
 
   body {
-    /* Đã thay từ bg-gray-50 thành bg-gray-100 */
     @apply bg-gray-100;
   }
 }
