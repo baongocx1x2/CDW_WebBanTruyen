@@ -4,21 +4,21 @@ export const authors: Author[] = [
   {
     id: 1,
     name: 'Eiichiro Oda',
-    image: '/public/images/oda.jpg',
+    image: '/images/oda.jpg',
     biography: 'Tác giả của One Piece',
     mangaCount: 1
   },
   {
     id: 2,
     name: 'Masashi Kishimoto',
-    image: '/public/images/masashi_kishimoto.jpg',
+    image: '/images/masashi_kishimoto.jpg',
     biography: 'Tác giả của Naruto',
     mangaCount: 2
   },
   {
     id: 3,
     name: 'Tite Kubo',
-    image: '/public/images/tite_kubo.jpg',
+    image: '/images/tite_kubo.jpg',
     biography: 'Tác giả của Bleach',
     mangaCount: 1
   }
@@ -38,7 +38,7 @@ export const mangas: Manga[] = [
     id: 1,
     title: 'One Piece',
     description: 'Câu chuyện về cuộc phiêu lưu của Monkey D. Luffy và băng hải tặc Mũ Rơm',
-    coverImage: '/public/images/onepiece.jpg',
+    coverImage: '/images/onepiece.jpg',
     price: 30000,
     rating: 4.9,
     author: authors[0],
@@ -63,7 +63,7 @@ export const mangas: Manga[] = [
     id: 2,
     title: 'Naruto',
     description: 'Câu chuyện về Naruto Uzumaki và hành trình trở thành Hokage',
-    coverImage: '/public/images/naruto.jpg',
+    coverImage: '/images/naruto.jpg',
     price: 25000,
     rating: 4.8,
     author: authors[1],
@@ -88,7 +88,7 @@ export const mangas: Manga[] = [
     id: 3,
     title: 'Bleach',
     description: 'Câu chuyện về Ichigo Kurosaki và hành trình làm Thần Chết',
-    coverImage: '/public/images/bleach.jpg',
+    coverImage: '/images/bleach.jpg',
     price: 28000,
     rating: 4.7,
     author: authors[2],
