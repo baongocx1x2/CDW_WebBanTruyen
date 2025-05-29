@@ -10,6 +10,7 @@ import Search from './pages/Search'
 import Checkout from './pages/checkout/Checkout'
 import OrderHistory from './pages/user/OrderHistory'
 import Profile from './pages/user/Profile'
+import Manga from './pages/Manga'
 import ReadManga from './pages/manga/ReadManga'
 
 // Import CSS
@@ -29,6 +30,7 @@ const App: React.FC = () => {
         <Route path="register" element={<Register />} />
         <Route path="profile" element={<Profile />} />
         <Route path="orders" element={<OrderHistory />} />
+        <Route path="manga" element={<Manga/>} />
       </Route>
     </Routes>
   )
