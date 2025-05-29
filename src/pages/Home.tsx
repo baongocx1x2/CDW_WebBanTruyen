@@ -77,17 +77,23 @@ const Home: React.FC = () => {
           </section>
 
           {/* Popular Authors */}
+
           <section className="container mx-auto px-4">
               <h2 className="text-2xl font-bold mb-6">Tác giả nổi tiếng</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                   {popularAuthors.map((author) => (
                       <div key={author.id} className="bg-white p-4 rounded-lg shadow-md text-center">
-                          <img
-                              src={author.image}
-                              alt={author.name}
-                              className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-                          />
-                          <h3 className="font-medium text-gray-900">{author.name}</h3>
+                          <Link to={`/author/${author.id}`}>
+                              <img
+                                  src={author.image}
+                                  alt={author.name}
+                                  className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                              />
+                          </Link>
+                          <Link to={`/author/${author.id}`}
+                                className="font-medium text-gray-900 hover:underline block mb-2">
+                              {author.name}
+                          </Link>
                           <p className="text-sm text-gray-600">{author.mangaCount} tác phẩm</p>
                       </div>
                   ))}
