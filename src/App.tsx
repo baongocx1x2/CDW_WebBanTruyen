@@ -12,6 +12,8 @@ import OrderHistory from './pages/user/OrderHistory'
 import Profile from './pages/user/Profile'
 import Manga from './pages/Manga'
 import ReadManga from './pages/manga/ReadManga'
+import AuthorDetail from "./pages/AuthorDetail";
+import MangaNews from './pages/MangaNews';
 
 // Import CSS
 import './index.css'
@@ -31,6 +33,8 @@ const App: React.FC = () => {
         <Route path="profile" element={<Profile />} />
         <Route path="orders" element={<OrderHistory />} />
         <Route path="manga" element={<Manga/>} />
+        <Route path="author/:id" element={<AuthorDetail />} />
+        <Route path="news" element={<MangaNews />} />
       </Route>
     </Routes>
   )

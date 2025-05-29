@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -12,58 +12,75 @@ const Header: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
-  // Hàm xử lý tìm kiếm: dùng useNavigate để chuyển hướng đến trang tìm kiếm
   const handleSearch = () => {
     if (searchTerm.trim()) {
-      // Chuyển hướng đến trang kết quả tìm kiếm với query được mã hóa
       navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
     }
   };
 
   return (
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center h-16 space-x-4">
-            {/* Logo */}
-            <Link to="/" className="text-2xl font-bold text-indigo-600">
-              MangaStore
-            </Link>
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-3">
+          <div className="flex items-center justify-between">
+            {/* Left Side: Logo & Navigation */}
+            <div className="flex items-center space-x-8">
+              <Link to="/" className="text-3xl font-extrabold text-indigo-600">
+                MangaStore
+              </Link>
+              <nav className="hidden md:flex space-x-6">
+                <Link
+                    to="/"
+                    className="text-lg text-gray-700 hover:text-indigo-600 transition-colors"
+                >
+                  Trang chủ
+                </Link>
+                <Link
+                    to="/manga"
+                    className="text-lg text-gray-700 hover:text-indigo-600 transition-colors"
+                >
+                  Danh mục
+                </Link>
+                <Link
+                    to="/new-releases"
+                    className="text-lg text-gray-700 hover:text-indigo-600 transition-colors"
+                >
+                  Mới phát hành
+                </Link>
+                {/* Link đến trang Tin tức */}
+                <Link
+                    to="/news"
+                    className="text-lg text-gray-700 hover:text-indigo-600 transition-colors"
+                >
+                  Tin tức
+                </Link>
+              </nav>
+            </div>
 
-            {/* Navigation */}
-            <nav className="hidden md:flex space-x-8">
-              <Link to="/" className="text-gray-700 hover:text-indigo-600">
-                Trang chủ
-              </Link>
-              <Link to="/manga" className="text-gray-700 hover:text-indigo-600">
-                Danh mục
-              </Link>
-              <Link to="/new-releases" className="text-gray-700 hover:text-indigo-600">
-                Mới phát hành
-              </Link>
-            </nav>
-
-            {/* Search Bar – hiển thị trên md trở lên */}
-            <div className="flex-1 hidden md:block">
+            {/* Middle: Search Bar */}
+            <div className="flex-1 mx-4 hidden md:block">
               <div className="relative">
                 <input
                     type="text"
                     placeholder="Tìm kiếm theo tên..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-600"
+                    className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-full focus:outline-none focus:border-indigo-600 transition-colors"
                 />
                 <button
                     onClick={handleSearch}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                    className="absolute inset-y-0 right-0 flex items-center pr-4"
                 >
                   <FontAwesomeIcon icon={faSearch} className="text-gray-500" />
                 </button>
               </div>
             </div>
 
-            {/* User Controls */}
-            <div className="flex items-center space-x-4">
-              <Link to="/cart" className="text-gray-700 hover:text-indigo-600 relative">
+            {/* Right Side: Cart & User Controls */}
+            <div className="flex items-center space-x-6">
+              <Link
+                  to="/cart"
+                  className="relative text-gray-700 hover:text-indigo-600 transition-colors"
+              >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -79,7 +96,7 @@ const Header: React.FC = () => {
                   />
                 </svg>
                 {cart && cart.items.length > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    <span className="absolute -top-2 -right-2 inline-flex items-center justify-center w-5 h-5 bg-red-500 text-white text-xs rounded-full">
                   {cart.items.length}
                 </span>
                 )}
@@ -89,32 +106,37 @@ const Header: React.FC = () => {
                   <div className="relative">
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600"
+                        className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 focus:outline-none transition-colors"
                     >
                       <img
                           src={user.avatar || '/default-avatar.png'}
                           alt={user.username}
-                          className="w-8 h-8 rounded-full"
+                          className="w-10 h-10 rounded-full object-cover"
                       />
-                      <span>{user.username}</span>
+                      <span className="hidden lg:block font-medium">{user.username}</span>
                     </button>
                     {isMenuOpen && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10">
                           <Link
                               to="/profile"
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                              onClick={() => setIsMenuOpen(false)}
                           >
                             Hồ sơ
                           </Link>
                           <Link
                               to="/orders"
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                              onClick={() => setIsMenuOpen(false)}
                           >
                             Đơn hàng
                           </Link>
                           <button
-                              onClick={logout}
-                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={() => {
+                                logout();
+                                setIsMenuOpen(false);
+                              }}
+                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                           >
                             Đăng xuất
                           </button>
@@ -122,13 +144,16 @@ const Header: React.FC = () => {
                     )}
                   </div>
               ) : (
-                  <div className="space-x-4">
-                    <Link to="/login" className="text-gray-700 hover:text-indigo-600">
+                  <div className="flex items-center space-x-4">
+                    <Link
+                        to="/login"
+                        className="text-lg text-gray-700 hover:text-indigo-600 transition-colors"
+                    >
                       Đăng nhập
                     </Link>
                     <Link
                         to="/register"
-                        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+                        className="bg-indigo-600 text-white text-lg px-4 py-2 rounded-full hover:bg-indigo-700 transition-colors"
                     >
                       Đăng ký
                     </Link>
