@@ -1,6 +1,5 @@
 package com.comicop_v2.entities;
 
-import com.comicop_v2.imgStorage.FileData;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -30,9 +29,8 @@ public class Product {
     @Column(name = "product_desc")
     private String description;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
-    private FileData image;
+    @Column(name = "image_path")
+    private String imagePath;  // Changed from FileData to String for image path
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

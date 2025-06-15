@@ -26,37 +26,16 @@ public class ProductService {
     private final StorageService storageService;
 
     // Product CRUD operations
-    public Product createProduct(Product product, MultipartFile image, Set<Long> categoryIds)
-            throws IOException {
-
-        // 1. Validate dữ liệu
+    public Product createProduct(Product product, MultipartFile image, Set<Long> categoryIds) throws IOException {
         validateProduct(product);
 
         if (image != null && !image.isEmpty()) {
-            // 1. Lưu ảnh vào thư mục
-            String uploadDir = "/uploads/products/";
-            String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir + fileName);
-
-            Files.createDirectories(filePath.getParent());
-            image.transferTo(filePath);
-
-            // 2. Lưu metadata vào DB
-            FileData fileData = new FileData();
-            fileData.setName(fileName);
-            fileData.setFilePath(filePath.toString());
-            fileData.setType(image.getContentType());
-            product.setImage(fileData);
-        }
-        if (image != null && !image.isEmpty()) {
-            FileData fileData = processImageUpload(image);
-            product.setImage(fileData);
+            String imagePath = storageService.uploadImageToFileSystem(image);
+            product.setImagePath(imagePath);
         }
 
-        // 3. Lưu product vào database
         Product savedProduct = productRepository.save(product);
 
-        // 4. Xử lý danh mục
         if (categoryIds != null && !categoryIds.isEmpty()) {
             addCategoriesToProduct(savedProduct, categoryIds);
         }
@@ -73,17 +52,6 @@ public class ProductService {
         }
     }
 
-    private FileData processImageUpload(MultipartFile image) throws IOException {
-        // Upload ảnh vào filesystem và lưu metadata vào database
-        String filePath = storageService.uploadImageToFileSystem(image);
-
-        return FileData.builder()
-                .name(image.getOriginalFilename())
-                .type(image.getContentType())
-                .filePath(filePath)
-                .fileSize(image.getSize())
-                .build();
-    }
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
@@ -92,7 +60,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product updateProduct(Long id, Product productDetails, MultipartFile newImageFile) throws IOException {
+    public Product updateProduct(Long id, Product productDetails) throws IOException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
@@ -108,10 +76,7 @@ public class ProductService {
         if (productDetails.getDescription() != null) {
             product.setDescription(productDetails.getDescription());
         }
-        if (newImageFile != null && !newImageFile.isEmpty()) {
-            FileData newImage = uploadImage(newImageFile);
-            product.setImage(newImage);
-        }
+
 
         return productRepository.save(product);
     }
