@@ -2,10 +2,14 @@ package com.comicop_v2.controller;
 
 import com.comicop_v2.Service.CategoryService;
 import com.comicop_v2.Service.ProductService;
+import com.comicop_v2.Service.RoleCheckService;
 import com.comicop_v2.entities.Category;
 import com.comicop_v2.entities.Product;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,22 +23,36 @@ public class AdminController {
 
     private final CategoryService categoryService;
     private final ProductService productService;
+    private final RoleCheckService roleCheckService;
 
-    public AdminController(CategoryService categoryService, ProductService productService) {
+    public AdminController(CategoryService categoryService, ProductService productService, RoleCheckService roleCheckService) {
         this.categoryService = categoryService;
         this.productService = productService;
+        this.roleCheckService = roleCheckService;
     }
 
+    private ResponseEntity<?> checkAdminPermission() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        if (!roleCheckService.hasRole(username, "ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied. Admin role required.");
+        }
+        return null;
+    }
 
     @PostMapping("/categories")
-    public ResponseEntity<Category> createCategory(
-            @RequestParam String name,
-            @RequestParam(required = false) String description) {
+    public ResponseEntity<?> createCategory(
+            @RequestBody Category category) {
+
+        ResponseEntity<?> permissionCheck = checkAdminPermission();
+        if (permissionCheck != null) return permissionCheck;
+
         try {
-            Category newCategory = categoryService.createCategory(name, description);
+            Category newCategory = categoryService.createCategory(category.getCategoryName(), category.getDescription());
             return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -52,42 +70,54 @@ public class AdminController {
     }
 
     @PutMapping("/categories/{id}")
-    public ResponseEntity<Category> updateCategory(
+    public ResponseEntity<?> updateCategory(
             @PathVariable Long id,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String description) {
+
+        ResponseEntity<?> permissionCheck = checkAdminPermission();
+        if (permissionCheck != null) return permissionCheck;
+
         try {
             Category updatedCategory = categoryService.updateCategory(id, name, description);
             return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/categories/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+        ResponseEntity<?> permissionCheck = checkAdminPermission();
+        if (permissionCheck != null) return permissionCheck;
+
         try {
             categoryService.deleteCategory(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     // ========== PRODUCT ENDPOINTS ========== //
 
-    @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(
-            @RequestPart Product product,
-            @RequestPart(required = false) MultipartFile image,
-            @RequestParam(required = false) Set<Long> categoryIds) {
+    @PostMapping(value = "/products",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createProduct(
+            @RequestPart("product") Product product,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "categoryIds", required = false) Set<Long> categoryIds) {
+
+        ResponseEntity<?> permissionCheck = checkAdminPermission();
+        if (permissionCheck != null) return permissionCheck;
+
         try {
             Product newProduct = productService.createProduct(product, image, categoryIds);
             return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
         } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("File upload error", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -105,53 +135,69 @@ public class AdminController {
     }
 
     @PutMapping("/products/{id}")
-    public ResponseEntity<Product> updateProduct(
+    public ResponseEntity<?> updateProduct(
             @PathVariable Long id,
             @RequestPart Product productDetails,
             @RequestPart(required = false) MultipartFile newImage) {
+
+        ResponseEntity<?> permissionCheck = checkAdminPermission();
+        if (permissionCheck != null) return permissionCheck;
+
         try {
             Product updatedProduct = productService.updateProduct(id, productDetails, newImage);
             return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("File upload error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/products/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        ResponseEntity<?> permissionCheck = checkAdminPermission();
+        if (permissionCheck != null) return permissionCheck;
+
         try {
             productService.deleteProduct(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
 
     // ========== PRODUCT-CATEGORY MANAGEMENT ========== //
 
     @PostMapping("/products/{productId}/categories/{categoryId}")
-    public ResponseEntity<Product> addCategoryToProduct(
+    public ResponseEntity<?> addCategoryToProduct(
             @PathVariable Long productId,
             @PathVariable Long categoryId) {
+
+        ResponseEntity<?> permissionCheck = checkAdminPermission();
+        if (permissionCheck != null) return permissionCheck;
+
         try {
             Product product = productService.addCategoryToProduct(productId, categoryId);
             return new ResponseEntity<>(product, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/products/{productId}/categories/{categoryId}")
-    public ResponseEntity<Product> removeCategoryFromProduct(
+    public ResponseEntity<?> removeCategoryFromProduct(
             @PathVariable Long productId,
             @PathVariable Long categoryId) {
+
+        ResponseEntity<?> permissionCheck = checkAdminPermission();
+        if (permissionCheck != null) return permissionCheck;
+
         try {
             Product product = productService.removeCategoryFromProduct(productId, categoryId);
             return new ResponseEntity<>(product, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 

@@ -3,11 +3,14 @@ package com.comicop_v2.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
@@ -34,6 +37,20 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Order> orders = new ArrayList<>();
+
+    // Tạo giỏ hàng khi user được tạo
+    @PostPersist
+    public void initializeCart() {
+        if (this.cart == null) {
+            this.cart = new Cart();
+            this.cart.setUser(this);
+        }
+    }
 
     public User(String username, String email, String password, Role role) {
         this.username = username;
@@ -60,6 +77,8 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + role.name())
+        );
     }
 }

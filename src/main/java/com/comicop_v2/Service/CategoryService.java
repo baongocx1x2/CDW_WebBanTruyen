@@ -13,9 +13,9 @@ import java.util.Optional;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    // Category CRUD operations
+
     public Category createCategory(String name, String description) {
-        if (name == null || name.trim().isEmpty()) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Category name cannot be empty");
         }
 
@@ -23,7 +23,7 @@ public class CategoryService {
             throw new IllegalArgumentException("Category name already exists: " + name);
         }
 
-        Category category = new Category(name.trim(), description);
+        Category category = new Category(name, description);
         return categoryRepository.save(category);
     }
 
