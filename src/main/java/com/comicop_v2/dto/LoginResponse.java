@@ -1,4 +1,4 @@
-package com.comicop_v2.response;
+package com.comicop_v2.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

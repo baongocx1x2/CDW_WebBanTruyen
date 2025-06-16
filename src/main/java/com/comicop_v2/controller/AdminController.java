@@ -3,8 +3,10 @@ package com.comicop_v2.controller;
 import com.comicop_v2.Service.CategoryService;
 import com.comicop_v2.Service.ProductService;
 import com.comicop_v2.Service.RoleCheckService;
+import com.comicop_v2.Service.UserService;
 import com.comicop_v2.entities.Category;
 import com.comicop_v2.entities.Product;
+import com.comicop_v2.entities.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -17,22 +19,28 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
+    private final UserService userService;
     private final CategoryService categoryService;
     private final ProductService productService;
     private final RoleCheckService roleCheckService;
+    private final ObjectMapper objectMapper;
 
-    public AdminController(CategoryService categoryService, ProductService productService, RoleCheckService roleCheckService) {
+    public AdminController(UserService userService, CategoryService categoryService, ProductService productService,
+                           RoleCheckService roleCheckService, ObjectMapper objectMapper) {
+        this.userService = userService;
         this.categoryService = categoryService;
         this.productService = productService;
         this.roleCheckService = roleCheckService;
+        this.objectMapper = objectMapper;
     }
 
     private ResponseEntity<?> checkAdminPermission() {
@@ -44,7 +52,13 @@ public class AdminController {
         }
         return null;
     }
-
+    // ========== USERS ENDPOINTS ========== //
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.allUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+    // ========== CATEGORY ENDPOINTS ========== //
     @PostMapping("/categories")
     public ResponseEntity<?> createCategory(
             @RequestBody Category category) {
@@ -103,7 +117,6 @@ public class AdminController {
         }
     }
 
-    // ========== PRODUCT ENDPOINTS ========== //
 
     // ========== PRODUCT ENDPOINTS ========== //
 
@@ -117,7 +130,6 @@ public class AdminController {
         if (permissionCheck != null) return permissionCheck;
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             Product product = objectMapper.readValue(productJson, Product.class);
 
             // Validate product data
@@ -131,7 +143,6 @@ public class AdminController {
                 return ResponseEntity.badRequest().body("Quantity in stock cannot be negative");
             }
 
-            // Create and save product
             Product savedProduct = productService.createProduct(product, image, categoryIds);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
 
@@ -141,6 +152,28 @@ public class AdminController {
             return ResponseEntity.internalServerError().body("Failed to process image: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping(value = "/products/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateProduct(
+            @PathVariable Long id,
+            @RequestPart("product") String productJson,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+
+        ResponseEntity<?> permissionCheck = checkAdminPermission();
+        if (permissionCheck != null) return permissionCheck;
+
+        try {
+            Product productDetails = objectMapper.readValue(productJson, Product.class);
+            Product updatedProduct = productService.updateProduct(id, productDetails, image);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body("Invalid product data format");
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body("Failed to process image: " + e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -165,57 +198,6 @@ public class AdminController {
         }
     }
 
-    @PutMapping(value = "/products/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateProduct(
-            @PathVariable Long id,
-            @RequestPart("product") String productJson,
-            @RequestPart(value = "image", required = false) MultipartFile newImage,
-            @RequestParam(value = "categoryIds", required = false) Set<Long> categoryIds) {
-
-        ResponseEntity<?> permissionCheck = checkAdminPermission();
-        if (permissionCheck != null) return permissionCheck;
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Product productDetails = objectMapper.readValue(productJson, Product.class);
-
-            // Validate product data
-            if (productDetails.getProductName() != null && productDetails.getProductName().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("Product name cannot be empty");
-            }
-            if ( productDetails.getPrice() <= 0) {
-                return ResponseEntity.badRequest().body("Price must be greater than 0");
-            }
-            if (productDetails.getQtyInStock() < 0) {
-                return ResponseEntity.badRequest().body("Quantity in stock cannot be negative");
-            }
-
-            // Update product
-            Product updatedProduct = productService.updateProduct(id, productDetails, newImage);
-
-            // Update categories if provided
-            if (categoryIds != null) {
-                Set<Category> currentCategories = updatedProduct.getCategories();
-                currentCategories.clear();
-                categoryIds.forEach(categoryId -> {
-                    Category category = categoryService.getCategoryById(categoryId)
-                            .orElseThrow(() -> new RuntimeException("Category not found"));
-                    updatedProduct.addCategory(category);
-                });
-                productService.updateProduct(productDetails.getProductID());
-            }
-//ĐANG LỖI
-            return ResponseEntity.ok(updatedProduct);
-
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().body("Invalid product data format");
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError().body("Failed to process image: " + e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
     @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         ResponseEntity<?> permissionCheck = checkAdminPermission();
@@ -226,31 +208,23 @@ public class AdminController {
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body("Failed to delete product image");
         }
     }
 
-// ========== PRODUCT-CATEGORY MANAGEMENT ========== //
-
-    @PostMapping("/products/{productId}/categories")
-    public ResponseEntity<?> addCategoriesToProduct(
+    // ========== PRODUCT-CATEGORY MANAGEMENT ========== //
+    @PostMapping("/products/{productId}/categories/{categoryId}")
+    public ResponseEntity<?> addCategoryToProduct(
             @PathVariable Long productId,
-            @RequestBody Set<Long> categoryIds) {
+            @PathVariable Long categoryId) {
 
         ResponseEntity<?> permissionCheck = checkAdminPermission();
         if (permissionCheck != null) return permissionCheck;
 
         try {
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
-
-            categoryIds.forEach(categoryId -> {
-                Category category = categoryRepository.findById(categoryId)
-                        .orElseThrow(() -> new RuntimeException("Category not found"));
-                product.addCategory(category);
-            });
-
-            Product savedProduct = productRepository.save(product);
-            return ResponseEntity.ok(savedProduct);
+            Product product = productService.addCategoryToProduct(productId, categoryId);
+            return ResponseEntity.ok(product);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

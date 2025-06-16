@@ -15,43 +15,6 @@ import java.util.Optional;
 @Transactional
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByProductID(Long productID);
-    // Tìm product theo tên
-//    @Query("SELECT p FROM Product p WHERE p.productName = ?1")
-//    Optional<Product> findByName(String name);
-
-
-
-
-
-//
-//    // Cập nhật thông tin cơ bản của product
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE Product p SET p.productName = :name, p.price = :price, p.qtyInStock = :qty, p.img = :img, p.description = :desc WHERE p.productID = :id")
-//    int updateProductBasicInfo(@Param("id") Long productId,
-//                               @Param("name") String productName,
-//                               @Param("price") BigDecimal price,
-//                               @Param("qty") int qtyInStock,
-//                               @Param("img") String img,
-//                               @Param("desc") String description);
-//
-//    // Cập nhật tên product
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE Product p SET p.productName = :name WHERE p.productID = :id")
-//    int updateProductName(@Param("id") Long productId, @Param("name") String productName);
-//
-//    // Cập nhật giá product
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE Product p SET p.price = :price WHERE p.productID = :id")
-//    int updateProductPrice(@Param("id") Long productId, @Param("price") BigDecimal price);
-//
-//    // Cập nhật số lượng tồn kho
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE Product p SET p.qtyInStock = :qty WHERE p.productID = :id")
-//    int updateProductStock(@Param("id") Long productId, @Param("qty") int qtyInStock);
 
     // Tìm products theo category
     @Query("SELECT p FROM Product p JOIN p.categories c WHERE c.categoryName = :categoryName")

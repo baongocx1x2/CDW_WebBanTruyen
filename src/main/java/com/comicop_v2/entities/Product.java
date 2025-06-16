@@ -29,8 +29,11 @@ public class Product {
     @Column(name = "product_desc")
     private String description;
 
-    @Column(name = "image_path")
-    private String imagePath;  // Changed from FileData to String for image path
+    @Column(name = "image_url")  // URL truy cập ảnh từ bucket `bookthumbnail`
+    private String imageUrl;     // Ví dụ: https://xyz.supabase.co/storage/v1/object/public/bookthumbnail/product1.jpg
+
+    @Column(name = "image_key")  // Key lưu trong bucket (đường dẫn file)
+    private String imageKey;     // Ví dụ: "products/product1.jpg" hoặc "product1.jpg"
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

@@ -3,28 +3,36 @@ package com.comicop_v2.controller;
 
 import com.comicop_v2.Service.AuthenticationService;
 import com.comicop_v2.Service.JwtService;
+import com.comicop_v2.Service.UserService;
 import com.comicop_v2.dto.LoginUserDto;
 import com.comicop_v2.dto.RegisterUserDto;
 import com.comicop_v2.dto.VerifyUserDto;
 import com.comicop_v2.entities.User;
-import com.comicop_v2.response.LoginResponse;
+import com.comicop_v2.dto.LoginResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthenticationController {
     private final JwtService jwtService;
 
     private final AuthenticationService authenticationService;
+    private final UserService userService;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
+    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, UserService userService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
+        this.userService = userService;
     }
 
     @PostMapping("/signup")
@@ -92,5 +100,24 @@ public class AuthenticationController {
             response.put("message", "Token không hợp lệ");
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> authenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bạn chưa đăng nhập");
+        }
+
+        String email = authentication.getName();
+
+        Optional<User> user = userService.getUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
+        }
+
+        return ResponseEntity.ok(user);
+
     }
 }
