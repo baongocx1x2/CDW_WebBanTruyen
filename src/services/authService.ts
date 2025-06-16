@@ -1,4 +1,4 @@
-import api from './api.ts';
+import { api } from '../services/api';
 import { User, AuthResponse } from '../models/User.ts';
 
 export const authService = {

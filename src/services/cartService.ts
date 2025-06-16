@@ -1,4 +1,4 @@
-import api from './api';
+import { api } from '../services/api';
 import { Cart, CartItem, Order, CheckoutDetails } from '../models/Cart';
 
 export const cartService = {
@@ -43,7 +43,7 @@ export const cartService = {
     token?: string; // For credit card payments
   }) => api.post(`/orders/${orderId}/payment`, paymentDetails),
   
-  // Shipping tracking
+  // Shipping.tsx tracking
   getShippingStatus: (orderId: number) =>
     api.get(`/orders/${orderId}/shipping`),
 }; 
