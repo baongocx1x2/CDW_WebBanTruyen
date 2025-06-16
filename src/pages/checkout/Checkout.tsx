@@ -44,7 +44,7 @@ const Checkout: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Shipping Information */}
+        {/* Shipping.tsx Information */}
         <div>
           <h2 className="text-2xl font-bold mb-6">Thông tin giao hàng</h2>
           <form className="space-y-4">

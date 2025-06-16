@@ -1,3 +1,4 @@
+// src/components/Header.tsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -46,7 +47,6 @@ const Header: React.FC = () => {
                 >
                   Mới phát hành
                 </Link>
-                {/* Link đến trang Tin tức */}
                 <Link
                     to="/news"
                     className="text-lg text-gray-700 hover:text-indigo-600 transition-colors"
@@ -113,7 +113,9 @@ const Header: React.FC = () => {
                           alt={user.username}
                           className="w-10 h-10 rounded-full object-cover"
                       />
-                      <span className="hidden lg:block font-medium">{user.username}</span>
+                      <span className="hidden lg:block font-medium">
+                    {user.username}
+                  </span>
                     </button>
                     {isMenuOpen && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10">

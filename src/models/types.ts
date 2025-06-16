@@ -82,12 +82,17 @@ export interface LoginCredentials {
   password: string
 }
 
+// src/models/types.ts
+// src/models/types.ts
 export interface RegisterData {
-  username: string
-  email: string
-  password: string
-  firstName: string
-  lastName: string
+  username: string;
+  email: string;
+  password: string;
+}
+
+// Tạo 1 kiểu riêng cho form đăng ký có trường confirmPassword
+export interface RegisterFormData extends RegisterData {
+  confirmPassword: string;
 }
 
 export interface AuthState {
@@ -95,4 +100,7 @@ export interface AuthState {
   isAuthenticated: boolean
   loading: boolean
   error: string | null
-} 
+}
+
+export class RegisterFormData {
+}
